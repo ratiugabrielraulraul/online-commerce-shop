@@ -1,10 +1,16 @@
 package org.fasttrackit.onlinecommerceshop.service;
 
 import org.fasttrackit.onlinecommerceshop.domain.Product;
+import org.fasttrackit.onlinecommerceshop.expection.ResourceNotFoundException;
 import org.fasttrackit.onlinecommerceshop.persistance.ProductRepository;
-import org.fasttrackit.onlinecommerceshop.transfer.SaveProductRequest;
+import org.fasttrackit.onlinecommerceshop.transfer.product.GetProductRequest;
+import org.fasttrackit.onlinecommerceshop.transfer.product.SaveProductRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,9 +48,35 @@ public class ProductService {
 
     public Product getProduct(long id) {
         LOGGER.info("Retrieving product {}", id);
-        return productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product" + id + "not found."));
+        return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product" + id + "not found."));
+    }
+
+    public Product updateProduct(long id,SaveProductRequest request) {
+        LOGGER.info("Updating product {}",id,request);
+        Product product=getProduct(id);
+        BeanUtils.copyProperties(request,product);
+        return productRepository.save(product);
+    }
+
+    public void deleteProduct(long id) {
+        LOGGER.info("Deleting product {}",id);
+         productRepository.deleteById(id);
+    }
+
+    public Page<Product> getProducts(GetProductRequest request,Pageable pageable) {
+        LOGGER.info("Retrieving products {}", request);
+        if (request != null && request.getPartialName() != null && request.getMinimumQuantity() != null) {
+            return productRepository.findByNameContainingAndQuantityGreaterThanEqual(request.getPartialName(), request.getMinimumQuantity(), pageable);
+        } else if (request != null && request.getPartialName() != null) {
+            return productRepository.findByNameContaining(request.getPartialName(), pageable);
+        } else {
+            return productRepository.findAll(pageable);
+        }
+
+    }
+
     }
 
 
 
-}
+
