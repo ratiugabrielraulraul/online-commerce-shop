@@ -1,7 +1,9 @@
 package org.fasttrackit.onlinecommerceshop;
 
+
 import org.fasttrackit.onlinecommerceshop.domain.Customer;
 import org.fasttrackit.onlinecommerceshop.service.CustomerService;
+import org.fasttrackit.onlinecommerceshop.steps.CustomerSteps;
 import org.fasttrackit.onlinecommerceshop.transfer.customer.SaveCustomerRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,23 +20,56 @@ import static org.hamcrest.Matchers.greaterThan;
 @SpringBootTest
 public class CustomerServiceIntegrationTests {
 
-@Autowired
+    @Autowired
     private CustomerService customerService;
+    @Autowired
+    private CustomerSteps customerSteps;
 
     @Test
     public void testCreateCustomer_whenValidRequest_thenReturnCreatedCustomer() {
-        SaveCustomerRequest request = new SaveCustomerRequest();
-        request.setFirstName("Raul");
-        request.setLastName("Pop");
+     customerSteps.createCustomer();
 
-        Customer customer = customerService.createCustomer(request);
+        }
 
-        assertThat(customer, notNullValue());
-        assertThat(customer.getId(),greaterThan(0L));
-        assertThat(customer.getFirstName(),is(request.getFirstName()));
-        assertThat(customer.getLastName(),is(request.getLastName()));
+    @Test
+    public void testGetCustomer_whenExistingEntity_thenReturnCustomer(){
+        Customer createdCustomer = createCustomer();
+        Customer retrievedCustomer = customerService.getCustomer(createdCustomer.getId());
 
+        assertThat(retrievedCustomer,notNullValue());
+        assertThat(retrievedCustomer.getId(),is(createdCustomer.getId()));
+
+
+    }
+    // change
+    private Customer createCustomer() {
+        customerSteps.createCustomer();
+        return customerSteps.createCustomer();
     }
 
 
+    @Test
+    public void testUpdateCustomer_whenValidRequest_thenReturnUpdatedCustomer() {
+        Customer createdCustomer = createCustomer();
+        SaveCustomerRequest request = new SaveCustomerRequest();
+        request.setFirstName(createdCustomer.getFirstName()+ "Updated");
+        request.setLastName(createdCustomer.getLastName() + "Updated");
+
+        Customer updateCustomer = customerService.updateCustomer(createdCustomer.getId(), request);
+
+        assertThat(updateCustomer,notNullValue());
+        assertThat(updateCustomer.getId(),greaterThan(0L));
+        assertThat(updateCustomer.getFirstName(),is(request.getFirstName()));
+        assertThat(updateCustomer.getLastName(),is(request.getLastName()));
+
+    }
+
 }
+
+
+
+
+
+
+
+
