@@ -33,7 +33,7 @@ public class CustomerServiceIntegrationTests {
 
     @Test
     public void testGetCustomer_whenExistingEntity_thenReturnCustomer(){
-        Customer createdCustomer = createCustomer();
+        Customer createdCustomer = customerSteps.createCustomer();
         Customer retrievedCustomer = customerService.getCustomer(createdCustomer.getId());
 
         assertThat(retrievedCustomer,notNullValue());
@@ -41,16 +41,12 @@ public class CustomerServiceIntegrationTests {
 
 
     }
-    // change
-    private Customer createCustomer() {
-        customerSteps.createCustomer();
-        return customerSteps.createCustomer();
-    }
+
 
 
     @Test
     public void testUpdateCustomer_whenValidRequest_thenReturnUpdatedCustomer() {
-        Customer createdCustomer = createCustomer();
+        Customer createdCustomer = customerSteps.createCustomer();
         SaveCustomerRequest request = new SaveCustomerRequest();
         request.setFirstName(createdCustomer.getFirstName()+ "Updated");
         request.setLastName(createdCustomer.getLastName() + "Updated");
