@@ -1,10 +1,12 @@
 package org.fasttrackit.onlinecommerceshop.service;
 
+
 import org.fasttrackit.onlinecommerceshop.domain.Cart;
 import org.fasttrackit.onlinecommerceshop.domain.Customer;
 import org.fasttrackit.onlinecommerceshop.domain.Product;
 import org.fasttrackit.onlinecommerceshop.expection.ResourceNotFoundException;
 import org.fasttrackit.onlinecommerceshop.persistance.CartRepository;
+import org.fasttrackit.onlinecommerceshop.persistance.ProductRepository;
 import org.fasttrackit.onlinecommerceshop.transfer.cart.AddProductToCartRequest;
 import org.fasttrackit.onlinecommerceshop.transfer.cart.CartResponse;
 import org.fasttrackit.onlinecommerceshop.transfer.product.ProductInCartResponse;
@@ -27,13 +29,17 @@ public class CartService {
     private final CustomerService customerService;
     private final ProductService productService;
 
+    private final ProductRepository productRepository;
+
     //IoC Inversion of control
     @Autowired
-    public CartService(CartRepository cartRepository, CustomerService customerService, ProductService productService) {
+    public CartService(CartRepository cartRepository, CustomerService customerService, ProductService productService, ProductRepository productRepository) {
         this.cartRepository = cartRepository;
         this.customerService = customerService;
         this.productService = productService;
+        this.productRepository = productRepository;
     }
+
     // all action from the method above constitute a transaction
     @Transactional
     public void addProductToCart(AddProductToCartRequest request) {
@@ -55,7 +61,9 @@ public class CartService {
 
         cartRepository.save(cart);
 
+
     }
+
     @Transactional
     public CartResponse getCart(long customerId) {
         Cart cart = cartRepository.findById(customerId).
@@ -64,7 +72,7 @@ public class CartService {
         CartResponse cartResponse = new CartResponse();
         cartResponse.setId(cart.getId());
 
-        Set<ProductInCartResponse>products = new HashSet<>();
+        Set<ProductInCartResponse> products = new HashSet<>();
         Iterator<Product> iterator = cart.getProducts().iterator();
         while (iterator.hasNext()) {
             Product product = iterator.next();
@@ -79,12 +87,43 @@ public class CartService {
         }
         cartResponse.setProducts(products);
 
-        return  cartResponse;
+        return cartResponse;
     }
 
     public void deleteCart(long id) {
-        LOGGER.info("Deleting cart {}",id);
+        LOGGER.info("Deleting cart: {}", id);
         cartRepository.deleteById(id);
     }
 
+    public void deleteProductFromCart(long id, long itemId) {
+        Cart cart = cartRepository.findById(id).orElse(new Cart());
+
+        if ((cart.getCustomer() != null)) {
+            LOGGER.info("Cart found.");
+            Product product = productService.getProduct(itemId);
+
+            cart.removeFromCart(product);
+            LOGGER.info("Removing product from cart.");
+
+            cartRepository.save(cart);
+        }
+    }
+
+    public void updateCartCount(long cartId, long itemId, int quantity) {
+        Cart cart = cartRepository.findById(cartId).orElse(new Cart());
+
+        if (cart.getCustomer() != null) {
+            LOGGER.info("Cart found");
+            Product product = productService.getProduct(itemId);
+            product.setQuantity(quantity);
+            productRepository.save(product);
+        }
+    }
+
 }
+
+
+
+
+
+
