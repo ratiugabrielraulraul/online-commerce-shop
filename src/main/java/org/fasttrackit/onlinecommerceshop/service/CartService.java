@@ -48,6 +48,9 @@ public class CartService {
 
         }
         Product product = productService.getProduct(request.getProductId());
+        if (product == null) {
+            LOGGER.debug("Product doesn't exist.Retrieving customer to create a new cart.");
+        }
         cart.addToCart(product);
 
         cartRepository.save(cart);
@@ -71,11 +74,17 @@ public class CartService {
             productInCartResponse.setName(product.getName());
             productInCartResponse.setPrice(product.getPrice());
 
+
             products.add(productInCartResponse);
         }
         cartResponse.setProducts(products);
 
         return  cartResponse;
+    }
+
+    public void deleteCart(long id) {
+        LOGGER.info("Deleting cart {}",id);
+        cartRepository.deleteById(id);
     }
 
 }

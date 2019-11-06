@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/carts")
 public class CartController {
@@ -34,4 +34,12 @@ private final CartService cartService;
 
 
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteCart(@PathVariable("id") long id) {
+        cartService.deleteCart(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+
 }
