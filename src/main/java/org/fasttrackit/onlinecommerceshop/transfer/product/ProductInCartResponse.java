@@ -7,6 +7,25 @@ public class ProductInCartResponse {
     private long id;
     private String name;
     private double price;
+    private int quanitity;
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    private String imagePath;
+
+    public int getQuanitity() {
+        return quanitity;
+    }
+
+    public void setQuanitity(int quanitity) {
+        this.quanitity = quanitity;
+    }
 
     public long getId() {
         return id;
@@ -37,6 +56,8 @@ public class ProductInCartResponse {
         return "ProductInCartResponse{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", quantity='" + quanitity + '\'' +
+                ", imagePath='" + imagePath + '\'' +
                 ", price=" + price +
                 '}';
     }

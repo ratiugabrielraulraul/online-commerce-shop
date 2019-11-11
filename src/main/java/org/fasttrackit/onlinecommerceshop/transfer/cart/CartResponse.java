@@ -2,7 +2,7 @@ package org.fasttrackit.onlinecommerceshop.transfer.cart;
 
 import org.fasttrackit.onlinecommerceshop.transfer.product.ProductInCartResponse;
 
-import java.util.List;
+
 import java.util.Set;
 
 public class CartResponse {

@@ -48,7 +48,7 @@ public class Cart {
     }
 
     public Customer getCustomer() {
-        return customer;
+        return this.customer;
     }
 
     public void setCustomer(Customer customer) {
@@ -56,7 +56,7 @@ public class Cart {
     }
 
     public Set<Product> getProducts() {
-        return products;
+        return this.products;
     }
 
     public void setProducts(Set<Product> products) {

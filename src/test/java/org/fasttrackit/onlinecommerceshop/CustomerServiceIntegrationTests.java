@@ -4,6 +4,7 @@ package org.fasttrackit.onlinecommerceshop;
 import org.fasttrackit.onlinecommerceshop.domain.Customer;
 import org.fasttrackit.onlinecommerceshop.service.CustomerService;
 import org.fasttrackit.onlinecommerceshop.steps.CustomerSteps;
+import org.fasttrackit.onlinecommerceshop.transfer.cart.AddProductToCartRequest;
 import org.fasttrackit.onlinecommerceshop.transfer.customer.SaveCustomerRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,8 @@ public class CustomerServiceIntegrationTests {
     private CustomerService customerService;
     @Autowired
     private CustomerSteps customerSteps;
+
+
 
     @Test
     public void testCreateCustomer_whenValidRequest_thenReturnCreatedCustomer() {
@@ -59,6 +62,7 @@ public class CustomerServiceIntegrationTests {
         assertThat(updateCustomer.getLastName(),is(request.getLastName()));
 
     }
+
 
 }
 

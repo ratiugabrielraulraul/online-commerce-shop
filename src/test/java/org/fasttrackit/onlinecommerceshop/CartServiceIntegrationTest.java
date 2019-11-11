@@ -31,6 +31,8 @@ public class CartServiceIntegrationTest {
     @Autowired
     private ProductSteps productSteps;
 
+
+
     @Test
     public void testAddToCart_whenNewCart_thenCreateNewCart() {
         Customer customer = customerSteps.createCustomer();
@@ -60,4 +62,9 @@ public class CartServiceIntegrationTest {
 
 
 
-}
+
+    }
+
+
+
+

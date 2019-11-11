@@ -9,6 +9,7 @@ import org.fasttrackit.onlinecommerceshop.persistance.CartRepository;
 import org.fasttrackit.onlinecommerceshop.persistance.ProductRepository;
 import org.fasttrackit.onlinecommerceshop.transfer.cart.AddProductToCartRequest;
 import org.fasttrackit.onlinecommerceshop.transfer.cart.CartResponse;
+import org.fasttrackit.onlinecommerceshop.transfer.cart.UpdateCountRequest;
 import org.fasttrackit.onlinecommerceshop.transfer.product.ProductInCartResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +82,8 @@ public class CartService {
             productInCartResponse.setId(product.getId());
             productInCartResponse.setName(product.getName());
             productInCartResponse.setPrice(product.getPrice());
-
+            productInCartResponse.setQuanitity(product.getQuantity());
+            productInCartResponse.setImagePath(product.getImagePath());
 
             products.add(productInCartResponse);
         }
@@ -109,13 +111,13 @@ public class CartService {
         }
     }
 
-    public void updateCartCount(long cartId, long itemId, int quantity) {
+    public void updateCartCount(long cartId, UpdateCountRequest request) {
         Cart cart = cartRepository.findById(cartId).orElse(new Cart());
 
         if (cart.getCustomer() != null) {
             LOGGER.info("Cart found");
-            Product product = productService.getProduct(itemId);
-            product.setQuantity(quantity);
+            Product product = productService.getProduct(request.getProductId());
+            product.setQuantity(request.getCount());
             productRepository.save(product);
         }
     }

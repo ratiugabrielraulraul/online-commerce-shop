@@ -34,7 +34,7 @@ public class CustomerService {
 
     public Customer getCustomer(long id) {
         LOGGER.info("Retrieving customer {}",id);
-        return customerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer" + id + "not found."));
+        return customerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer " + id + " not found."));
 
     }
 
